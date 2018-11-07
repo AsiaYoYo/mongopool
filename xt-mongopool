@@ -1,0 +1,130 @@
+#!/bin/bash
+#
+# mongo     XT mongo pool
+#
+# chkconfig: 345 95 15
+# description: XieTong mongo pool
+# processname: xt-mongopool
+
+. /etc/init.d/functions
+
+if [ `whoami` != 'root' ]; then
+    echo "should run this script with user root"
+    exit 1
+fi
+
+prog="xt-mongopool"
+HOMEDIR=/XT/MONGO_POOL
+LOCKFILE=/var/lock/subsys/$prog
+LOGFILE=/home/vmlogs/$prog.log
+PIDFILE=/home/vmlogs/$prog.pid
+
+start() {
+    if [ -f $PIDFILE ]; then
+        pid=`cat $PIDFILE`
+        kill -s 0 $pid
+        if [ $? -eq 0 ]; then
+            echo "$prog is already started (pid $pid)"
+            return 0
+        fi
+    fi
+
+    echo -n "Starting $prog: "
+    cd $HOMEDIR
+    /usr/bin/twistd --pidfile=$PIDFILE --logfile=$LOGFILE mongopool
+    n=0
+    while true; do
+        sleep 1
+        if [ -f $PIDFILE ]; then
+            touch $LOCKFILE
+            return 0
+        fi
+        n=`expr $n + 1`
+        [ $n -gt 5 ] && break
+    done
+
+    return 1
+}
+
+stop() {
+    if [ ! -f $PIDFILE ]; then
+        echo "$prog is already stopped"
+        return 0
+    fi
+
+    pid=`cat $PIDFILE`
+    kill -15 $pid > /dev/null 2>&1
+
+    echo -n "Stopping... it may cost up to 60s"
+    n=0
+    while true; do
+        sleep 3
+
+        kill -s 0 $pid > /dev/null 2>&1
+        if [ $? -ne 0 ]; then
+            rm -f $LOCKFILE
+            rm -f $PIDFILE
+            echo "      [OK]"
+            return 0
+        fi
+
+        n=`expr $n + 1`
+        # 20 x 3 = 60s
+        [ $n -gt 20 ] && break
+    done
+
+    if [ -f $PIDFILE ]; then
+        kill -9 `cat $PIDFILE`
+        rm -f $PIDFILE
+        rm -f $LOCKFILE
+    fi
+
+    return 0
+}
+
+status() {
+    if [ -f $PIDFILE ]; then
+        pid=`cat $PIDFILE`
+        ps $pid > /dev/null
+        if [ $? -eq 0 ]; then
+            echo "$prog (pid $pid) is running"
+            return 0
+        else
+            if [ -f $LOCKFILE ]; then
+                echo "$prog dead but lock file exists"
+                return 2
+            else
+                echo "$prog dead but pid file exists"
+                return 1
+            fi
+        fi
+    else
+        echo "$prog is not running"
+        return 3
+    fi
+}
+
+forcestop() {
+    if [ -f $PIDFILE ]; then
+        pid=`cat $PIDFILE`
+        kill -9 $pid 2>&1 > /dev/null
+        rm -f $PIDFILE
+    fi
+    rm -f $LOCKFILE
+}
+
+restart() {
+    stop
+    start
+}
+
+case "$1" in
+    start)   start;;
+    stop)    stop;;
+    status)  status;;
+    restart) restart;;
+    *)
+        echo "Usage: $prog {start|stop|status|restart}"
+        exit 1
+        ;;
+esac
