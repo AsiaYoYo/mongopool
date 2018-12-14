@@ -24,7 +24,6 @@ podTemplate(label: 'jnlp-slave', cloud: 'kubernetes', containers: [
       stage('Tar Bao'){
           sh '''
           tar zcf mongopool.tar.gz *
-          mv mongopool.tar.gz deploy
           '''
       }
       stage('Build and Push Image'){
