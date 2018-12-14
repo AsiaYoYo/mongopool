@@ -22,7 +22,10 @@ podTemplate(label: 'jnlp-slave', cloud: 'kubernetes', containers: [
       	echo "Unit Testing..."
       }
       stage('Tar Bao'){
-          sh "tar zcf mongopool.tar.gz *"
+          sh '''
+          tar zcf mongopool.tar.gz *
+          mv mongopool.tar.gz deploy
+          '''
       }
       stage('Build and Push Image'){
           sh '''
