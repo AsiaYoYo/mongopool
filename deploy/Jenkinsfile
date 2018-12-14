@@ -21,8 +21,8 @@ podTemplate(label: 'jnlp-slave', cloud: 'kubernetes', containers: [
       stage('Unit Testing'){
       	echo "Unit Testing..."
       }
-      stage('Maven Build'){
-          sh "mvn clean package -Dmaven.test.skip=true"
+      stage('Tar Bao'){
+          sh "tar zcf mongopool.tar.gz *"
       }
       stage('Build and Push Image'){
           sh '''
