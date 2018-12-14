@@ -16,7 +16,6 @@ import json
 
 DB_CFG = "dbinfo.conf"
 
-
 class ConnectPool(object):
 
     def __init__(self, idle, busy):
@@ -44,7 +43,8 @@ class ConnectPool(object):
 
 class MongoPool(object, Resource):
 
-    def __init__(self, uri='mongodb://192.168.11.7:27017', max_conn=1):
+    #def __init__(self, uri='mongodb://10.97.75.238:27017', max_conn=1):
+    def __init__(self, uri='mongodb://mongo:27017', max_conn=1):
 
         # if max_connid null or is not 1-200 exception
         if not max_conn or not isinstance(max_conn, int) or max_conn > 200 or max_conn < 1:
