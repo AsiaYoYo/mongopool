@@ -1,9 +1,6 @@
-FROM xtdockerhub.com/ops/tomcat-85
-ADD target/solo.war /tmp
-RUN unzip -q /tmp/solo.war -d /usr/local/tomcat/webapps/ROOT
+FROM xtdockerhub.com/baseimage/python:20181109
+ADD target/mongopool.tar.gz /XT
+RUN tar zxf /XT/mongopool.tar.gz \
+    && mv /XT/mongopool -d /XT/MONGO_POOL
 
-COPY deploy/docker-entrypoint.sh /usr/bin/docker-entrypoint.sh
-ENTRYPOINT ["docker-entrypoint.sh"]
-
-EXPOSE 8080
-CMD ["./bin/catalina.sh", "run"]
+#CMD ["/XT/MONGO_POOL/xt-mongopool", "start"; "tail -f /XT/vmlogs/xt-mongopool.log"]

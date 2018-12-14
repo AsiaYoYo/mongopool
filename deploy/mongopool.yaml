@@ -1,0 +1,69 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    service: mongopool
+  name: mongopool
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        service: mongopool
+    spec:
+      containers:
+      - image: xtdockerhub.com/project/mongopool:20181109
+        name: mongopool
+        env:
+        - name: WORK_DIR
+          value: /XT/MONGO_POOL
+        command: 
+        - "bin/sh"
+        - "-c"
+        - "/XT/MONGO_POOL/xt-mongopool start; tail -f /XT/vmlogs/xt-mongopool.log"
+        ports:
+        - containerPort: 33400
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            port: 33400
+            path: /v1
+          initialDelaySeconds: 1
+          periodSeconds: 30
+        #resources: {}
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1024Mi"
+            cpu: "500m"
+        volumeMounts:
+        - mountPath: /XT/
+          name: data
+      volumes:
+      - name: data
+        hostPath:
+          path: /data/XT/
+          type: Directory
+      restartPolicy: Always
+status: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: mongopool
+  name: mongopool
+spec:
+  type: NodePort
+  ports:
+  - name: "mongopool"
+    port: 33400
+    targetPort: 33400
+    nodePort: 33400
+  selector:
+    service: mongopool
+status: {}

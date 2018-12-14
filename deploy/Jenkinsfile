@@ -16,7 +16,7 @@ podTemplate(label: 'jnlp-slave', cloud: 'kubernetes', containers: [
 {
   node("jnlp-slave"){
       stage('Git Checkout'){
-         checkout([$class: 'GitSCM', branches: [[name: '${Tag}']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'f6698074-d226-4fe7-a915-ebc8510eab63', url: 'https://github.com/AsiaYoYo/solo.git']]])
+         checkout([$class: 'GitSCM', branches: [[name: '${Tag}']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'f6698074-d226-4fe7-a915-ebc8510eab63', url: 'https://github.com/AsiaYoYo/mongopool.git']]])
       }
       stage('Unit Testing'){
       	echo "Unit Testing..."
@@ -28,17 +28,16 @@ podTemplate(label: 'jnlp-slave', cloud: 'kubernetes', containers: [
           sh '''
           echo "192.168.11.211 xtdockerhub.com" >> /etc/hosts
           docker login -u dev -p Dev12345 xtdockerhub.com
-          docker build -t xtdockerhub.com/project/solo:${Tag} -f deploy/Dockerfile .
-          docker push xtdockerhub.com/project/solo:${Tag}
+          docker build -t xtdockerhub.com/project/mongopool:${Tag} -f deploy/Dockerfile .
+          docker push xtdockerhub.com/project/mongopool:${Tag}
           '''
       }
       stage('Deploy to K8S'){
           sh '''
           cd deploy 
-          sed -i "/xtdockerhub.com/{s/latest/${Tag}/}" deploy.yaml
-          sed -i "s/environment/${Env}/" deploy.yaml
+          sed -i "/xtdockerhub.com/{s/latest/${Tag}/}" mongopool.yaml
           '''
-          kubernetesDeploy configs: 'deploy/deploy.yaml', kubeConfig: [path: ''], kubeconfigId: 'ac5bf8e1-c74f-406b-8565-f15e664b4b9f', secretName: '', ssh: [sshCredentialsId: '*', sshServer: ''], textCredentials: [certificateAuthorityData: '', clientCertificateData: '', clientKeyData: '', serverUrl: 'https://']
+          kubernetesDeploy configs: 'deploy/mongopool.yaml', kubeConfig: [path: ''], kubeconfigId: 'ac5bf8e1-c74f-406b-8565-f15e664b4b9f', secretName: '', ssh: [sshCredentialsId: '*', sshServer: ''], textCredentials: [certificateAuthorityData: '', clientCertificateData: '', clientKeyData: '', serverUrl: 'https://']
       }
       stage('Testing'){
           echo "Testing..."
