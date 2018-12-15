@@ -16,8 +16,8 @@ fi
 prog="xt-mongopool"
 HOMEDIR=/XT/MONGO_POOL
 LOCKFILE=/tmp/$prog
-LOGFILE=/XT/vmlogs/$prog.log
-PIDFILE=/XT/vmlogs/$prog.pid
+LOGFILE=/home/vmlogs/$prog.log
+PIDFILE=/home/vmlogs/$prog.pid
 
 start() {
     if [ -f $PIDFILE ]; then

@@ -22,7 +22,7 @@ spec:
         command: 
         - "/bin/sh"
         - "-c"
-        - "/XT/MONGO_POOL/xt-mongopool start; tail -f /XT/vmlogs/xt-mongopool.log"
+        - "xt-mongopool start; tail -f /home/vmlogs/xt-mongopool.log"
         ports:
         - containerPort: 33400
         livenessProbe:
@@ -41,7 +41,7 @@ spec:
             memory: "1024Mi"
             cpu: "500m"
         volumeMounts:
-        - mountPath: /XT/
+        - mountPath: /home/
           name: data
       volumes:
       - name: data
