@@ -22,7 +22,7 @@ spec:
         command: 
         - "/bin/sh"
         - "-c"
-        - "xt-mongopool start; tail -f /home/vmlogs/xt-mongopool.log"
+        - "/XT/MONGO_POOL/xt-mongopool start; tail -f /home/vmlogs/xt-mongopool.log"
         ports:
         - containerPort: 33400
         livenessProbe:
