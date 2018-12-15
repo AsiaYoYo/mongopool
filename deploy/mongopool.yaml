@@ -41,12 +41,12 @@ spec:
             memory: "1024Mi"
             cpu: "500m"
         volumeMounts:
-        - mountPath: /home/
-          name: data
+        - mountPath: /home/vmlogs/
+          name: vmlogs
       volumes:
-      - name: data
+      - name: vmlogs
         hostPath:
-          path: /data/XT/
+          path: /home/vmlogs/
           type: Directory
       restartPolicy: Always
 status: {}
