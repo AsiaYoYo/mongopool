@@ -20,7 +20,7 @@ spec:
         - name: WORK_DIR
           value: /XT/MONGO_POOL
         command: 
-        - "bin/sh"
+        - "/bin/sh"
         - "-c"
         - "/XT/MONGO_POOL/xt-mongopool start; tail -f /XT/vmlogs/xt-mongopool.log"
         ports:
