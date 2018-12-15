@@ -11,6 +11,8 @@ spec:
       labels:
         service: mongopool
     spec:
+      imagePullSecrets:
+      - name: registry-pull-secret
       containers:
       - image: xtdockerhub.com/project/mongopool:20181109
         name: mongopool
