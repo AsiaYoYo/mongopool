@@ -10,7 +10,6 @@ podTemplate(label: 'jnlp-slave', cloud: 'kubernetes', containers: [
     hostPathVolume(mountPath: '/usr/bin/docker', hostPath: '/usr/bin/docker'),
     hostPathVolume(mountPath: '/usr/local/jdk', hostPath: '/usr/local/jdk'),
     hostPathVolume(mountPath: '/usr/local/maven', hostPath: '/usr/local/maven'),
-    hostPathVolume(mountPath: '/usr/bin/tar', hostPath: '/usr/bin/tar'),
   ],
   imagePullSecrets: ['registry-pull-secret'],
 ) 
