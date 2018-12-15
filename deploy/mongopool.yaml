@@ -14,7 +14,7 @@ spec:
       imagePullSecrets:
       - name: registry-pull-secret
       containers:
-      - image: xtdockerhub.com/project/mongopool:20181109
+      - image: xtdockerhub.com/project/mongopool:latest
         name: mongopool
         env:
         - name: WORK_DIR
